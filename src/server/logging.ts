@@ -1,6 +1,4 @@
-
 import * as Koa from 'koa';
-import { config } from './config';
 
 interface ILogData {
     method: string;
@@ -17,16 +15,14 @@ interface ILogData {
 }
 
 function outputLog(data: Partial<ILogData>, thrownError: any) {
-    if (config.prettyLog) {
+    if (process.env.NODE_ENV === 'development') {
         console.log(`${data.statusCode} ${data.method} ${data.url} - ${data.responseTime}ms`);
         if (thrownError) {
             console.error(thrownError);
         }
-    }
-    else if (data.statusCode < 400) {
+    } else if (data && data.statusCode as any < 400) {
         process.stdout.write(JSON.stringify(data) + '\n');
-    }
-    else {
+    } else {
         process.stderr.write(JSON.stringify(data) + '\n');
     }
 }
@@ -36,20 +32,19 @@ export async function logger(ctx: Koa.Context, next: () => Promise<any>) {
     const start = new Date().getMilliseconds();
 
     const logData: Partial<ILogData> = {
-        method: ctx.method,
-        url: ctx.url,
-        query: ctx.query,
-        remoteAddress: ctx.request.ip,
-        host: ctx.headers['host'],
-        userAgent: ctx.headers['user-agent'],
+      host: ctx.headers.host,
+      method: ctx.method,
+      query: ctx.query,
+      remoteAddress: ctx.request.ip,
+      url: ctx.url,
+      userAgent: ctx.headers['user-agent'],
     };
 
     let errorThrown: any = null;
     try {
         await next();
         logData.statusCode = ctx.status;
-    }
-    catch (e) {
+    } catch (e) {
         errorThrown = e;
         logData.errorMessage = e.message;
         logData.errorStack = e.stack;

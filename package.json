@@ -4,20 +4,34 @@
   "main": "dist/index.js",
   "license": "CC0-1.0",
   "scripts": {
-    "build-server": "tslint --project . && tsc",
-    "watch-server": "cross-env NODE_ENV=development nodemon --watch src/**/* -e ts,tsx --exec ts-node src/server/server.ts"
+    "start": "npm run serve",
+    "build": "npm run build-ts && npm run tslint",
+    "serve": "node dist/index.js",
+    "watch-node": "nodemon dist/src/index.js",
+    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "build-ts": "tsc",
+    "watch-ts": "tsc -w",
+    "tslint": "tslint -c tslint.json -p tsconfig.json --format verbose --fix"
   },
   "devDependencies": {
-    "@types/koa": "2.0.39",
-    "@types/koa-router": "7.0.23",
-    "cross-env": "5.0.5",
-    "nodemon": "1.12.0",
-    "ts-node": "3.3.0",
-    "tslint": "5.7.0",
-    "typescript": "2.5.2"
+    "@types/dotenv": "4.0.3",
+    "@types/koa": "^2.0.46",
+    "@types/koa-router": "^7.0.32",
+    "@types/nodemailer": "4.6.5",
+    "@types/redis": "2.8.6",
+    "concurrently": "4.0.1",
+    "cross-env": "^5.2.0",
+    "nodemon": "^1.18.4",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.1"
   },
   "dependencies": {
-    "koa": "2.3.0",
-    "koa-router": "7.2.1"
+    "dotenv": "latest",
+    "kijiji-scraper": "4.0.2",
+    "koa": "^2.5.3",
+    "koa-router": "^7.4.0",
+    "nodemailer": "4.6.8",
+    "redis": "2.8.0"
   }
 }
