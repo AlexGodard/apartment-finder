@@ -2,9 +2,7 @@ import { config } from 'dotenv';
 import * as kijiji from 'kijiji-scraper';
 import Koa from 'koa';
 
-if (process.env.NODE_ENV === 'development') {
-  config({ path: `${process.env.HOME}/.env` });
-}
+config({ path: `${process.env.HOME}/.env` });
 
 import { logger } from './logging';
 import { getTestMessageUrl, sendMailAsync } from './mailer';
@@ -19,6 +17,7 @@ app.use(routes);
 app.listen(3000);
 
 console.log(`Server running on port ${3000}`);
+console.log(`NODE_ENV is set to ${process.env.NODE_ENV}`);
 
 const options = {
   minResults: 20,
@@ -60,9 +59,7 @@ setInterval(async () => {
 
       await saddAsync('seen_ads', ...newAds.map((newAd: any) => newAd.id));
 
-      if (process.env.NODE_ENV !== 'production') {
-        console.log(`Preview URL: ${getTestMessageUrl(info)}`);
-      }
+      console.log(`Preview URL: ${getTestMessageUrl(info)}`);
     }
 
   } catch (e) {
