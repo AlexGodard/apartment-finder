@@ -34,7 +34,7 @@ const params = {
 
 let counter = 0;
 
-const searches = ['saint+henri', 'st+henri', 'atwater'];
+const searches = ['saint+henri', 'st+henri', 'atwater', 'pointe-saint-charles', 'charlevoix', 'sud-ouest'];
 
 // Scrape using returned promise
 setInterval(async () => {
