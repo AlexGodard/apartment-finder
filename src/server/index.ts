@@ -43,6 +43,9 @@ const searches = [
   'sud-ouest',
   'sudouest',
   'lionel-groulx',
+  'mile-ex',
+  'petite-italie',
+  'mile-end',
 ];
 
 // Scrape using returned promise
@@ -76,6 +79,6 @@ setInterval(async () => {
   }
 
   counter += 1;
-}, 30000);
+}, 15000);
 
 export { app };
