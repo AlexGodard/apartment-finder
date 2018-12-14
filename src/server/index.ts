@@ -34,7 +34,7 @@ const params = {
 
 let counter = 0;
 
-const searches = [
+const searchTerms = [
   'saint+henri',
   'st+henri',
   'atwater',
@@ -46,12 +46,19 @@ const searches = [
   'mile-ex',
   'petite-italie',
   'mile-end',
+  'mileend',
+  'rosemont',
+  'laurier',
+  'outremont',
+  'mont-royal',
+  'montroyal',
 ];
 
 // Scrape using returned promise
 setInterval(async () => {
   try {
-    let ads = await kijiji.search({ ...params, keywords: searches[counter % searches.length]  }, options);
+    const searchTerm = searchTerms[counter % searchTerms.length];
+    let ads = await kijiji.search({ ...params, keywords: searchTerm }, options);
     ads = ads.map((ad: any) => ({ ...ad, id: ad.url.substr(ad.url.lastIndexOf('/') + 1) }));
     const oldAds = await smembersAsync('seen_ads');
 
@@ -59,11 +66,11 @@ setInterval(async () => {
     if (newAds.length) {
       const info = await sendMailAsync({
         from: process.env.SEND_MAIL_FROM, // sender address
-        html: `<div>I found an apartment for ya.:${newAds.reduce((carry: string, newAd: any) => {
+        html: `<div>I found an apartment (in ${searchTerm}) for ya:${newAds.reduce((carry: string, newAd: any) => {
           return carry + `<br /><br/><a href="${newAd.url}">${newAd.url}</a>`;
         }, '')}</div>`, // html body
-        subject: 'New kijiji ads found', // Subject line
-        text: `I found an apartment for ya. ${newAds.reduce((carry: string, newAd: any) => {
+        subject: 'New apartment found', // Subject line
+        text: `I found an apartment (in ${searchTerm}) for ya ${newAds.reduce((carry: string, newAd: any) => {
           return carry + `${newAd.url}, `;
         }, '')}`, // plain text body,
         to: process.env.SEND_MAIL_TO, // list of receivers
@@ -79,6 +86,6 @@ setInterval(async () => {
   }
 
   counter += 1;
-}, 15000);
+}, 10000);
 
 export { app };
